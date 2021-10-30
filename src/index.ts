@@ -42,8 +42,6 @@ const startServer = () => {
     io.on('connection', intializeSockets)
 }
 
-startServer()
-
 process.on('unhandledRejection', (err: Error) => {
     console.log(
         `Unhandled Rejection: ${err.name} ${err.message} , shutting down...`
@@ -52,3 +50,7 @@ process.on('unhandledRejection', (err: Error) => {
         process.exit(1)
     })
 })
+
+
+startServer()
+

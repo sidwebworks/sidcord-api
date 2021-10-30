@@ -16,8 +16,8 @@
         ]
     },
     "scripts": {
-        "prestart": "rimraf dist && tsc",
-        "start": "cross-env NODE_ENV=production node ./dist/index.js",
+        "predev": "rimraf dist && tsc",
+        "start": "tsc && cross-env NODE_ENV=production node ./dist/index.js",
         "dev": "cross-env NODE_ENV=development tsup src --watch --silent --onSuccess \"node dist/index.js\"",
         "lint": "eslint --fix ."
     },
