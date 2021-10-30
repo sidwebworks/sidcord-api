@@ -1,0 +1,68 @@
+{
+    "name": "example",
+    "version": "1.0.0",
+    "private": true,
+    "main": "dist/index.js",
+    "author": "sidrathi47",
+    "engines": {
+        "node": ">=14.x"
+    },
+    "tsup": {
+        "splitting": false,
+        "sourcemap": true,
+        "clean": true,
+        "entryPoints": [
+            "src/index.ts"
+        ]
+    },
+    "scripts": {
+        "prestart": "rimraf dist && tsc",
+        "start": "cross-env NODE_ENV=production node ./dist/index.js",
+        "dev": "cross-env NODE_ENV=development tsup src --watch --silent --onSuccess \"node dist/index.js\"",
+        "lint": "eslint --fix ."
+    },
+    "_moduleAliases": {
+        "@controllers": "dist/api/controllers",
+        "@services": "dist/api/services",
+        "@config": "dist/config",
+        "@helpers": "dist/api/helpers",
+        "@models": "dist/api/models",
+        "@middlewares": "dist/api/middlewares",
+        "@validations": "dist/api/validations"
+    },
+    "dependencies": {
+        "@types/jsonwebtoken": "^8.5.5",
+        "axios": "^0.23.0",
+        "cors": "^2.8.5",
+        "cross-env": "^7.0.3",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "helmet": "^4.6.0",
+        "http-errors": "^1.8.0",
+        "jsonwebtoken": "^8.5.1",
+        "module-alias": "^2.2.2",
+        "mongoose": "^6.0.9",
+        "morgan": "^1.10.0",
+        "rimraf": "^3.0.2",
+        "socket.io": "^4.3.1",
+        "tsup": "^5.4.0",
+        "winston": "^3.3.3",
+        "yup": "^0.32.9"
+    },
+    "devDependencies": {
+        "@types/cors": "^2.8.12",
+        "@types/express": "^4.17.13",
+        "@types/http-errors": "^1.8.1",
+        "@types/morgan": "^1.9.3",
+        "@types/node": "^16.10.1",
+        "@types/winston": "^2.4.4",
+        "@types/yup": "^0.29.13",
+        "@typescript-eslint/eslint-plugin": "^4.31.2",
+        "@typescript-eslint/parser": "^4.31.2",
+        "eslint": "^7.32.0",
+        "eslint-config-prettier": "^8.3.0",
+        "eslint-plugin-prettier": "^4.0.0",
+        "prettier": "^2.4.1",
+        "typescript": "^4.4.3"
+    }
+}
