@@ -2,7 +2,7 @@
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
-        "lib": ["es5", "es6", "esnext.asynciterable"],
+        "lib": ["es5", "ES2015"],
         "sourceMap": true,
         "outDir": "./dist",
         "moduleResolution": "node",

@@ -13,7 +13,10 @@ export const buildDevLogger = () => {
             errors({ stack: true }),
             logFormat
         ),
-        transports: [new transports.Console()],
-        level: process.env.LOG_LEVEL,
+        transports: [
+            new transports.Console({
+                level: process.env.LOG_LEVEL,
+            }),
+        ],
     })
 }

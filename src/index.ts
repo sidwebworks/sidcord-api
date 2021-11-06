@@ -16,31 +16,9 @@ import { chatController } from '@controllers/chat.controller'
 import http from 'http'
 import { Server, Socket } from 'socket.io'
 import app from './api/app'
-
-const PORT = process.env.PORT || 3000
-
-connectMongo()
+import { findAll } from '@services/chat.service'
 
 const server = http.createServer(app)
-
-const startServer = () => {
-    const io = new Server(server, {
-        cors: {
-            origin: 'http://localhost:3000',
-            methods: ['GET', 'POST'],
-        },
-    })
-
-    server.listen(PORT, () => {
-        logger.debug(`Server started at ${PORT}`)
-    })
-
-    const intializeSockets = (socket: Socket) => {
-        chatController(socket, io)
-    }
-
-    io.on('connection', intializeSockets)
-}
 
 process.on('unhandledRejection', (err: Error) => {
     console.log(
@@ -51,6 +29,54 @@ process.on('unhandledRejection', (err: Error) => {
     })
 })
 
+const main = async function () {
+    const PORT = process.env.PORT || 3000
 
-startServer()
+    await connectMongo()
 
+    const io = new Server(server, {
+        cors: {
+            origin: 'http://localhost:3000',
+            methods: ['GET', 'POST'],
+        },
+    })
+
+    await setupServers(io)
+
+    server.listen(PORT, () => {
+        logger.debug(`Server started at ${PORT}`)
+    })
+}
+
+main()
+
+export const setupServers = async (io: Server) => {
+    /**
+     * Load and listen for all existing servers
+     * when server starts.
+     */
+    const servers = await findAll()
+
+    if (servers) {
+        servers.forEach((server) => {
+            io.of(server.endpoint).on('connection', (socket) => {
+                // Send the incoming socket to the chat controller
+                chatController(socket, io, server)
+            })
+        })
+    }
+
+    /**
+     * If any client creates a new server, listen for it
+     * and update all clients to invalidate their cache
+     */
+    io.on('server-created', (server) => {
+        io.of(server.endpoint).on('connection', (socket) =>
+            chatController(socket, io, server)
+        )
+
+        io.emit('reload-servers', 'New server has been added.')
+    })
+
+   
+}

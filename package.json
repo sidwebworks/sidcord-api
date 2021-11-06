@@ -16,7 +16,7 @@
         ]
     },
     "scripts": {
-        "predev": "rimraf dist && tsc",
+        "predev": "rimraf dist",
         "start": "tsc && cross-env NODE_ENV=production node ./dist/index.js",
         "dev": "cross-env NODE_ENV=development tsup src --watch --silent --onSuccess \"node dist/index.js\"",
         "lint": "eslint --fix ."
@@ -33,6 +33,7 @@
     "dependencies": {
         "@types/jsonwebtoken": "^8.5.5",
         "axios": "^0.23.0",
+        "cookie-parser": "^1.4.5",
         "cors": "^2.8.5",
         "cross-env": "^7.0.3",
         "dotenv": "^10.0.0",
@@ -43,6 +44,7 @@
         "module-alias": "^2.2.2",
         "mongoose": "^6.0.9",
         "morgan": "^1.10.0",
+        "nano-id": "^1.1.0",
         "rimraf": "^3.0.2",
         "socket.io": "^4.3.1",
         "tsup": "^5.4.0",

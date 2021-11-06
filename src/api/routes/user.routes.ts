@@ -14,4 +14,5 @@ userRouter.post('/github', githubAuth) // Github Authentication
 
 userRouter.get('/:id', checkAuth, getUserById) // Get user by `id`
 
+
 export default userRouter

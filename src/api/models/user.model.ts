@@ -1,5 +1,5 @@
 import { model, Mongoose, ObjectId, Schema } from 'mongoose'
-import type { User } from 'typings/types/auth'
+import type { User } from 'typings/interfaces/auth'
 
 const schema = new Schema<User>({
     username: {
@@ -21,6 +21,15 @@ const schema = new Schema<User>({
         },
         id: {
             type: String,
+        },
+    },
+    chat: {
+        joined_servers: {
+            type: Array,
+        },
+
+        friends: {
+            type: Array,
         },
     },
     avatar: String,

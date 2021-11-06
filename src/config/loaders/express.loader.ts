@@ -1,7 +1,7 @@
 import cors from 'cors'
 import express, { Application } from 'express'
 import helmet from 'helmet'
-
+import cookies from 'cookie-parser'
 import { httpLogger } from '../logger'
 
 const loader = (app: Application) => {
@@ -30,6 +30,8 @@ const loader = (app: Application) => {
      *? Configure cross origin resource sharing
      */
     app.use(cors())
+
+    app.use(cookies())
 
     app.use(httpLogger)
 

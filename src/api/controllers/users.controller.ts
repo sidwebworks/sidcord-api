@@ -1,18 +1,16 @@
 import catchAsync from '@helpers/catchAsync'
-import UserModel from '@models/user.model'
-import UsersService from '@services/users.service'
+import { sign } from '@helpers/jwt.helper'
+import * as UsersService from '@services/users.service'
 import axios, { AxiosResponse } from 'axios'
 import createError from 'http-errors'
 
 const GOOGLE_API_URL = 'https://www.googleapis.com/oauth2/v1/'
 const GITHUB_API_URL = 'https://api.github.com/'
 
-const ServiceInstance = new UsersService({ User: UserModel })
-
 export const getUserById = catchAsync(async (req, res, next) => {
     const { id } = req.params
 
-    const alreadyExists = await ServiceInstance.find({
+    const alreadyExists = await UsersService.find({
         _id: id,
     })
 
@@ -24,20 +22,16 @@ export const getUserById = catchAsync(async (req, res, next) => {
         )
     }
 
-    const access_token = ServiceInstance.signToken(alreadyExists)
-
     return res.status(200).json({
         status: 'success',
         message: 'User Found',
         result: {
             user: alreadyExists,
-            access_token,
         },
     })
 })
 
 export const githubAuth = catchAsync(async (req, res, _next) => {
-
     const fetchGithubUser: AxiosResponse<any> = await axios.get(
         `${GITHUB_API_URL}user`,
         {
@@ -47,12 +41,12 @@ export const githubAuth = catchAsync(async (req, res, _next) => {
 
     const { login, avatar_url, id, name, email } = fetchGithubUser.data
 
-    const alreadyExists = await ServiceInstance.find({
+    const alreadyExists = await UsersService.find({
         provider: { name: 'github', id: id.toString() },
     })
 
     if (alreadyExists) {
-        const access_token = ServiceInstance.signToken(alreadyExists)
+        const access_token = UsersService.createAccessToken(alreadyExists)
 
         return res.status(200).json({
             status: 'success',
@@ -64,7 +58,7 @@ export const githubAuth = catchAsync(async (req, res, _next) => {
         })
     }
 
-    const { user, access_token } = await ServiceInstance.create({
+    const { user, access_token } = await UsersService.create({
         username: login,
         avatar: avatar_url,
         email: email,
@@ -73,6 +67,7 @@ export const githubAuth = catchAsync(async (req, res, _next) => {
             name: 'github',
             id: id,
         },
+        chat: null,
     })
 
     return res.status(200).json({
@@ -86,19 +81,18 @@ export const githubAuth = catchAsync(async (req, res, _next) => {
 })
 
 export const googleAuth = catchAsync(async (req, res, _next) => {
-
     const fetchGoogleUser: AxiosResponse<any> = await axios.get(
         `${GOOGLE_API_URL}userinfo?alt=json&access_token=${req.body.accessToken}`
     )
 
     const { id, email, name, picture } = fetchGoogleUser.data
 
-    const alreadyExists = await ServiceInstance.find({
+    const alreadyExists = await UsersService.find({
         provider: { name: 'google', id: id.toString() },
     })
 
     if (alreadyExists) {
-        const access_token = ServiceInstance.signToken(alreadyExists)
+        const access_token = UsersService.createAccessToken(alreadyExists)
 
         return res.status(200).json({
             status: 'success',
@@ -110,7 +104,7 @@ export const googleAuth = catchAsync(async (req, res, _next) => {
         })
     }
 
-    const { user, access_token } = await ServiceInstance.create({
+    const { user, access_token } = await UsersService.create({
         username: name,
         avatar: picture,
         email: email,
@@ -119,6 +113,7 @@ export const googleAuth = catchAsync(async (req, res, _next) => {
             name: 'google',
             id: id,
         },
+        chat: null,
     })
 
     return res.status(200).json({
