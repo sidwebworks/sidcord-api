@@ -31,12 +31,12 @@ process.on('unhandledRejection', (err: Error) => {
 
 const main = async function () {
     const PORT = process.env.PORT || 3000
-
+    const CORS = process.env.CLIENT_URL || 'http://localhost:3000'
     await connectMongo()
 
     const io = new Server(server, {
         cors: {
-            origin: 'http://localhost:3000',
+            origin: [CORS, 'http://localhost:3000'],
             methods: ['GET', 'POST'],
         },
     })
@@ -77,6 +77,4 @@ export const setupServers = async (io: Server) => {
 
         io.emit('reload-servers', 'New server has been added.')
     })
-
-   
 }
