@@ -9,7 +9,7 @@
         "removeComments": true,
         "strictNullChecks": true,
         "strictFunctionTypes": true,
-        "noImplicitThis": true,
+      "noImplicitThis": true,
         "noImplicitReturns": true,
         "noFallthroughCasesInSwitch": true,
         "allowSyntheticDefaultImports": true,
